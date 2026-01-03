@@ -11,6 +11,14 @@ const routes = [
       title: "Inicio de Sesion - CRUD Supabase",
     },
   },
+  {
+    path: "/register",
+    name: "SignInPage",
+    component: () => import("@/views/SingInView.vue"),
+    meta: {
+      title: "Registro - CRUD Supabase",
+    },
+  },
 ];
 
 const router = createRouter({

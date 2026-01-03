@@ -14,22 +14,18 @@
                         <Input id="email" type="email" placeholder="correo@ejemplo.com" />
                     </div>
                     <div class="flex flex-col space-y-1.5">
-                        <div class="flex items-center">
-                            <Label for="password"> Contraseña </Label>
-                            <a href="#" class="ml-auto inline-block text-sm underline">
-                                ¿Olvidaste tu Contraseña?
-                            </a>
-                        </div>
+                        <Label for="email"> Contraseña </Label>
                         <Input id="password" type="password" />
                     </div>
                 </div>
             </form>
         </CardContent>
         <CardFooter class="flex flex-col gap-2">
-            <Button class="w-full">
+            <Button class="w-full" @click="handleLogin">
                 Iniciar Sesion
             </Button>
-            <Button variant="outline" class="w-full">
+            <p>¿No tienes una cuenta?</p>
+            <Button variant="outline" class="w-full" @click="handleSignIn">
                 Registrate
             </Button>
         </CardFooter>
@@ -40,4 +36,25 @@ import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader,
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+
+const router = useRouter();
+
+const login = ref(false);
+
+
+const loginForm = ref({
+    correo: '',
+    password: '',
+})
+
+const handleLogin = () => {
+    console.log("Correo ingresado", loginForm.value.correo);
+    console.log("Correo contraseña", loginForm.value.password);
+}
+
+const handleSignIn = () => {
+    router.replace('/register')
+}
 </script>
