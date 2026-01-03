@@ -7,29 +7,21 @@
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <form>
+            <form @submit.prevent="handleSignIn">
                 <div class="grid w-full items-center gap-4">
-                    <div class="flex flex-col space-y-1.5">
-                        <Label for="username"> Nombre de Usuario </Label>
-                        <Input id="username" type="text" placeholder="John Doe" v-model="singInForm.username" />
-                    </div>
                     <div class="flex flex-col space-y-1.5">
                         <Label for="correo"> Correo </Label>
                         <Input id="correo" type="email" placeholder="correo@ejemplo.com" v-model="singInForm.correo" />
                     </div>
                     <div class="flex flex-col space-y-1.5">
-                        <Label for="telefono"> Telefono </Label>
-                        <Input id="telefono" type="tel" placeholder="1234567890" v-model="singInForm.telefono" />
-                    </div>
-                    <div class="flex flex-col space-y-1.5">
-                        <Label for="email"> Contraseña </Label>
-                        <Input id="password" type="password" />
+                        <Label for="password"> Contraseña </Label>
+                        <Input id="password" type="password" v-model="singInForm.password" />
                     </div>
                 </div>
             </form>
         </CardContent>
         <CardFooter class="flex flex-col gap-2">
-            <Button class="w-full">
+            <Button :disabled="disable || login" class="w-full" @click="handleSignIn">
                 Registrate
             </Button>
             <p>¿Ya tienes una cuenta?</p>
@@ -45,20 +37,67 @@ import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import supabase from '@/supabase/client';
 
 const router = useRouter();
 
 const login = ref(false);
-
+const disable = computed(() => {
+    return singInForm.value.correo === '' || singInForm.value.password === '';
+})
 
 const singInForm = ref({
-    username: '',
     correo: '',
-    telefono: '',
     password: '',
 
 })
+const errors = ref({
+    correo: '',
+    password: ''
+})
+
+const onValidate = () => {
+    Object.keys(errors.value).forEach(key => {
+        errors.value[key] = ''
+    })
+
+    if (!singInForm.value.correo.trim()) {
+        errors.value.correo = 'El correo es obligatorio'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(singInForm.value.correo)) {
+        errors.value.correo = 'Correo inválido'
+    }
+
+    // Password
+    if (!singInForm.value.password.trim()) {
+        errors.value.password = 'La contraseña es obligatoria'
+    } else if (singInForm.value.password.length < 6) {
+        errors.value.password = 'Mínimo 6 caracteres'
+    }
+
+    // Si hay errores, retorna false
+    return !Object.values(errors.value).some(error => error)
+}
+
+const handleSignIn = async () => {
+    if (!onValidate()) return
+
+    try {
+        console.log('Proceso de registro Iniciado')
+        login.value = true;
+        const result = await supabase.auth.signUp({
+            email: singInForm.value.correo,
+            password: singInForm.value.password,
+        })
+
+        console.log('Formulario Valido', singInForm.value);
+        console.log({ result });
+        login.value = true;
+    } catch (error) {
+        console.log('Ocurrio un error', error);
+    }
+
+}
 
 const handleLogin = () => {
     router.replace('/login')
