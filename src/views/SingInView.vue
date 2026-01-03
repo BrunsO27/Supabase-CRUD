@@ -3,15 +3,23 @@
         <CardHeader>
             <CardTitle>Registro</CardTitle>
             <CardDescription>
-                Ingresa tu correo electronico y contraseña para registrarte
+                Ingresa los siguientes datos solicitados para poder registrarte
             </CardDescription>
         </CardHeader>
         <CardContent>
             <form>
                 <div class="grid w-full items-center gap-4">
                     <div class="flex flex-col space-y-1.5">
-                        <Label for="email"> Correo </Label>
-                        <Input id="email" type="email" placeholder="correo@ejemplo.com" />
+                        <Label for="username"> Nombre de Usuario </Label>
+                        <Input id="username" type="text" placeholder="John Doe" v-model="singInForm.username" />
+                    </div>
+                    <div class="flex flex-col space-y-1.5">
+                        <Label for="correo"> Correo </Label>
+                        <Input id="correo" type="email" placeholder="correo@ejemplo.com" v-model="singInForm.correo" />
+                    </div>
+                    <div class="flex flex-col space-y-1.5">
+                        <Label for="telefono"> Telefono </Label>
+                        <Input id="telefono" type="tel" placeholder="1234567890" v-model="singInForm.telefono" />
                     </div>
                     <div class="flex flex-col space-y-1.5">
                         <Label for="email"> Contraseña </Label>
@@ -44,9 +52,12 @@ const router = useRouter();
 const login = ref(false);
 
 
-const loginForm = ref({
+const singInForm = ref({
+    username: '',
     correo: '',
+    telefono: '',
     password: '',
+
 })
 
 const handleLogin = () => {
