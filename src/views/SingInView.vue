@@ -7,7 +7,7 @@
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <form @submit.prevent="handleSignIn">
+            <form @submit.prevent="handleSignUp">
                 <div class="grid w-full items-center gap-4">
                     <div class="flex flex-col space-y-1.5">
                         <Label for="correo"> Correo </Label>
@@ -21,7 +21,7 @@
             </form>
         </CardContent>
         <CardFooter class="flex flex-col gap-2">
-            <Button :disabled="disable || login" class="w-full" @click="handleSignIn">
+            <Button :disabled="disable || login" class="w-full" @click="handleSignUp">
                 Registrate
             </Button>
             <p>¿Ya tienes una cuenta?</p>
@@ -79,7 +79,7 @@ const onValidate = () => {
     return !Object.values(errors.value).some(error => error)
 }
 
-const handleSignIn = async () => {
+const handleSignUp = async () => {
     if (!onValidate()) return
 
     try {
@@ -92,7 +92,7 @@ const handleSignIn = async () => {
 
         console.log('Formulario Valido', singInForm.value);
         console.log({ result });
-        login.value = true;
+        login.value = false;
     } catch (error) {
         console.log('Ocurrio un error', error);
     }
