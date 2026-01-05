@@ -1,38 +1,47 @@
 <template>
-    <Card class="w-full max-w-sm">
-        <CardHeader>
-            <CardTitle>Registro</CardTitle>
-            <CardDescription>
-                Ingresa los siguientes datos solicitados para poder registrarte
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <form @submit.prevent="handleSignUp">
-                <div class="grid w-full items-center gap-4">
-                    <div class="flex flex-col space-y-1.5">
+    <div class="min-h-screen flex items-center justify-center bg-muted px-4">
+        <Card class="w-full max-w-md">
+            <CardHeader class="text-center">
+                <CardTitle>Registro</CardTitle>
+                <CardDescription>
+                    Ingresa los siguientes datos solicitados para poder registrarte
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent>
+                <form @submit.prevent="handleSignUp" class="grid gap-4">
+                    <div class="space-y-1.5">
                         <Label for="correo"> Correo </Label>
                         <Input id="correo" type="email" placeholder="correo@ejemplo.com" v-model="singInForm.correo" />
                     </div>
-                    <div class="flex flex-col space-y-1.5">
+
+                    <div class="space-y-1.5">
                         <Label for="password"> Contraseña </Label>
                         <Input id="password" type="password" v-model="singInForm.password" />
                     </div>
-                </div>
-            </form>
-        </CardContent>
-        <CardFooter class="flex flex-col gap-2">
-            <Button :disabled="disable || login" class="w-full" @click="handleSignUp">
-                Registrate
-            </Button>
-            <p>¿Ya tienes una cuenta?</p>
-            <Button variant="outline" class="w-full" @click="handleLogin">
-                Iniciar Sesion
-            </Button>
-        </CardFooter>
-    </Card>
+                </form>
+            </CardContent>
+
+            <CardFooter class="flex flex-col gap-3">
+                <Button :disabled="disable || login" class="w-full" @click="handleSignUp">
+                    <Spinner v-if="login" class="mr-2 h-4 w-4" />
+                    Registrate
+                </Button>
+
+                <p class="text-sm text-muted-foreground">
+                    ¿Ya tienes una cuenta?
+                </p>
+
+                <Button variant="outline" class="w-full" @click="handleLogin">
+                    Iniciar Sesion
+                </Button>
+            </CardFooter>
+        </Card>
+    </div>
 </template>
 <script setup>
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/spinner';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
@@ -92,9 +101,11 @@ const handleSignUp = async () => {
 
         console.log('Formulario Valido', singInForm.value);
         console.log({ result });
-        login.value = false;
+        router.replace('/');
     } catch (error) {
         console.log('Ocurrio un error', error);
+    } finally {
+        login.value = false
     }
 
 }
