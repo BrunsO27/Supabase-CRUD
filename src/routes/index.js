@@ -1,14 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-
-import LoginView from "@/views/LoginView.vue";
+import supabase from "@/supabase/client";
 
 const routes = [
   {
+    path: "/",
+    name: "HomePage",
+    component: () => import("@/views/HomeView.vue"),
+    meta: {
+      title: "Home - CRUD Supabase",
+      requiresAuth: true,
+    },
+  },
+  {
     path: "/login",
     name: "LoginPage",
-    component: LoginView,
+    component: () => import("@/views/LoginView.vue"),
     meta: {
-      title: "Inicio de Sesion - CRUD Supabase",
+      title: "Inicio de Sesión - CRUD Supabase",
     },
   },
   {
@@ -24,6 +32,25 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const { data } = await supabase.auth.getSession();
+
+  console.log({ data });
+
+  const isAuth = !!data.session;
+
+  if (to.meta.requiresAuth && !isAuth) {
+    return next("/login");
+  }
+
+  // Evitar ir a login si ya está autenticado
+  if ((to.path === "/login" || to.path === "/register") && isAuth) {
+    return next("/");
+  }
+
+  next();
 });
 
 export default router;
