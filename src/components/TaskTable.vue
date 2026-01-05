@@ -28,7 +28,7 @@
                     </TableCell>
                 </TableRow>
 
-                <TableRow v-for="tarea in tareas" :key="tarea.id">
+                <TableRow v-for="tarea in tareas" :key="tarea.idTarea">
                     <TableCell>
                         <div class="flex items-center gap-2">
                             <Check v-if="tarea.completada" class="h-5 w-5 text-green-600" />
@@ -313,11 +313,11 @@ const confirmarEditar = async () => {
                 titulo: dialogoEditar.value.datos.titulo,
                 descripcion: dialogoEditar.value.datos.descripcion
             })
-            .eq('id', dialogoEditar.value.tarea.id);
+            .eq('idTarea', dialogoEditar.value.tarea.idTarea);
 
         if (updateError) throw updateError;
 
-        const tarea = tareas.value.find(t => t.id === dialogoEditar.value.tarea.id);
+        const tarea = tareas.value.find(t => t.idTarea === dialogoEditar.value.tarea.idTarea);
         if (tarea) {
             tarea.titulo = dialogoEditar.value.datos.titulo;
             tarea.descripcion = dialogoEditar.value.datos.descripcion;
@@ -341,11 +341,11 @@ const confirmarCompletar = async () => {
         const { error: updateError } = await supabase
             .from('Tarea')
             .update({ completada: nuevoEstado })
-            .eq('id', dialogoCompletar.value.tarea.id);
+            .eq('idTarea', dialogoCompletar.value.tarea.idTarea);
 
         if (updateError) throw updateError;
 
-        const tarea = tareas.value.find(t => t.id === dialogoCompletar.value.tarea.id);
+        const tarea = tareas.value.find(t => t.idTarea === dialogoCompletar.value.tarea.idTarea);
         if (tarea) {
             tarea.completada = nuevoEstado;
         }
@@ -366,12 +366,12 @@ const confirmarEliminar = async () => {
         const { error: deleteError } = await supabase
             .from('Tarea')
             .delete()
-            .eq('id', dialogoEliminar.value.tarea.id);
+            .eq('idTarea', dialogoEliminar.value.tarea.idTarea);
 
         if (deleteError) throw deleteError;
 
         // Eliminar de la lista local
-        tareas.value = tareas.value.filter(t => t.id !== dialogoEliminar.value.tarea.id);
+        tareas.value = tareas.value.filter(t => t.idTarea !== dialogoEliminar.value.tarea.idTarea);
 
         cerrarDialogoEliminar();
     } catch (err) {
